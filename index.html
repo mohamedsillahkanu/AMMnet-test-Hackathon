@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMMnet DHIS2 Hackathon</title>
+<style>
+:root{
+  --bg:#0d1117; --surface:#161b22; --raised:#21262d; --line:#30363d;
+  --text:#e6edf3; --muted:#9aa7b4; --link:#56B4E9; --focus:#F0E442;
+  --t1:#B5E48C; --t2:#FFD166; --t3:#56B4E9; --t4:#F0E442; --t5:#F0894A; --t6:#009E73; --t7:#CC79A7; --t8:#E69F00; --t9:#5BD1D7; --t10:#C0E218; --t11:#9AD1F5; --t12:#A9A6FF; --t13:#7FD4C1; --t14:#F4A6C0; --t15:#D291FF; --t16:#5BD1D7; --t17:#FFAFCC; --t18:#C0E218;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:1440px;margin:0 auto;padding:0 16px}
+
+/* header: AMMnet left, title, ICF right, as in the training portal */
+.header{background:linear-gradient(135deg,#1f2937,#374151);padding:10px 0 14px;border-bottom:1px solid var(--line)}
+.repo-header{display:flex;align-items:center;gap:16px}
+.header{position:relative;background:linear-gradient(135deg,#141b24 0%,#1b2734 55%,#0f151c 100%);border-bottom:1px solid #263243}
+.header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,#56B4E9 0 11%,#F0E442 11% 22%,#F0894A 22% 33%,#009E73 33% 45%,#CC79A7 45% 56%,#E69F00 56% 67%,#9AD1F5 67% 78%,#A9A6FF 78% 89%,#7FD4C1 89% 100%)}
+.brand-row{display:flex;align-items:center;gap:20px}
+.brand-logo{width:88px;height:88px;border-radius:16px;flex:none;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.brand-text{min-width:0}
+.repo-title{font-size:34px;font-weight:800;letter-spacing:-.4px;color:#fff;margin:0}
+.repo-description{color:#EAF2FA;margin:6px 0 0;font-size:15.5px}
+.presenter{margin-top:18px;padding:14px 18px;border-left:4px solid #F0E442;background:rgba(255,255,255,.06);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:3px}
+.presenter-label{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#56B4E9;font-weight:700}
+.presenter-name{font-size:21px;font-weight:800;color:#ffffff;letter-spacing:.2px}
+.presenter-role{font-size:15px;color:#7FD4C1}
+.presenter-role.org{color:#E69F00}
+.stats-bar{margin-top:18px;background:rgba(0,0,0,.25)}
+@media (max-width:640px){
+  .brand-logo{width:64px;height:64px;border-radius:12px}
+  .repo-title{font-size:24px}
+  .presenter-name{font-size:17px}
+  .presenter-role{font-size:13.5px}
+}
+.repo-info{flex:1;min-width:0}
+.repo-title{font-size:26px;font-weight:800;color:#fff;line-height:1.15}
+.repo-description{margin-top:6px;font-size:15.5px;color:#EAF2FA}
+.stats-bar{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;margin-top:12px;padding:10px 15px;
+  background:rgba(13,17,23,.45);border:1px solid var(--line);border-radius:6px;font-size:13px;color:var(--muted)}
+.stat-number{color:var(--text);font-weight:700}
+
+main.container{padding-top:22px;padding-bottom:40px}
+.categories-container{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.categories-header{background:var(--raised);padding:15px 20px;border-bottom:1px solid var(--line)}
+.categories-title{font-weight:600;color:var(--text)}
+.categories-sub{font-size:13.5px;color:var(--muted);margin-top:2px}
+
+/* topic cards */
+.home-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding:20px}
+@media (max-width:1180px){.home-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.home-cards{grid-template-columns:1fr;padding:14px;gap:14px}}
+
+.home-card{--accent:var(--t1);display:flex;flex-direction:column;background:var(--bg);
+  border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:8px;padding:22px;
+  color:inherit;text-decoration:none;transition:border-color .2s,transform .2s}
+.home-card.t1{--accent:var(--t1)} .home-card.t2{--accent:var(--t2)} .home-card.t3{--accent:var(--t3)} .home-card.t4{--accent:var(--t4)} .home-card.t5{--accent:var(--t5)} .home-card.t6{--accent:var(--t6)} .home-card.t7{--accent:var(--t7)} .home-card.t8{--accent:var(--t8)} .home-card.t9{--accent:var(--t9)} .home-card.t10{--accent:var(--t10)} .home-card.t11{--accent:var(--t11)} .home-card.t12{--accent:var(--t12)} .home-card.t13{--accent:var(--t13)} .home-card.t14{--accent:var(--t14)} .home-card.t15{--accent:var(--t15)} .home-card.t16{--accent:var(--t16)} .home-card.t17{--accent:var(--t17)} .home-card.t18{--accent:var(--t18)}
+.home-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.home-card:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-color:var(--accent)}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.home-card-icon{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;
+  border-radius:8px;color:var(--accent);border:1px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.topic-badge{font-size:13px;font-weight:700;color:var(--accent);border:1px solid var(--line);
+  border-radius:999px;padding:3px 12px;background:var(--surface)}
+.home-card-title{font-size:20px;font-weight:650;color:var(--text);margin-bottom:8px;line-height:1.3}
+.home-card-text{font-size:14px;color:var(--muted);line-height:1.6;flex:1}
+.home-card-meta{margin:18px 0 16px;font-size:12.5px;color:var(--accent);font-weight:600}
+.tile-file{font-family:Consolas,'Courier New',monospace;font-size:11.5px;color:#8899ad;margin:6px 0 16px;word-break:break-all}
+@media (min-width:641px){.tile-file{min-height:3.2em}}
+.tile-file code{color:#b8c4d2}
+.open-btn{align-self:flex-start;background:var(--accent);color:#0d1117;font-weight:700;font-size:13.5px;
+  padding:8px 16px;border-radius:5px}
+
+.footer{text-align:center;color:#EAF2FA;font-size:14px;padding:22px 0 10px} .footer strong{color:#56B4E9}
+
+@media (max-width:900px){
+  .repo-title{font-size:21px} .repo-description{font-size:12px}
+  .stats-bar{gap:6px 14px;font-size:12px}
+}
+@media (max-width:620px){
+  .repo-header{gap:10px}
+  .repo-title{font-size:19px} .repo-description{font-size:12.5px}
+  .stats-bar{gap:4px 12px;font-size:11.5px}
+}
+@media (prefers-reduced-motion:reduce){ .home-card{transition:none} .home-card:hover{transform:none} }
+</style>
+<style id="palette">
+:root{--muted:#CBDAE8}
+body{color:#EAF2FA}
+p,li,td{color:#EAF2FA}
+table th{color:#56B4E9}
+.home-card-text{color:#CBDAE8}
+.home-card-meta{color:#7FD4C1}
+.stat-item{color:#CBDAE8}
+.footer{color:#CBDAE8}
+.section-sub{color:#CBDAE8}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="container">
+    <div class="brand-row">
+      <img class="brand-logo" src="data:image/png;base64,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" alt="AMMnet logo">
+      <div class="brand-text">
+        <h1 class="repo-title">AMMnet DHIS2 Hackathon</h1>
+      </div>
+    </div>
+    <div class="presenter">
+      <span class="presenter-label">Facilitated by</span>
+      <span class="presenter-name">Mohamed Sillah Kanu</span>
+      <span class="presenter-role"><strong>Chief Executive Officer (CEO)</strong></span>
+      <span class="presenter-role org">Informatics Consultancy Firm, Sierra Leone (ICF-SL)</span>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item"><span class="stat-number">18</span> topics</div>
+      <div class="stat-item"><span class="stat-number">158</span> steps</div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="categories-container" aria-labelledby="topics-title">
+    <div class="categories-header">
+      <div class="categories-title" id="topics-title">The eighteen topics</div>
+      <p class="categories-sub">Take them in order, because each topic builds on the one before it.</p>
+    </div>
+    <div class="home-cards">
+            <a class="home-card t1" href="topic1.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg></span>
+                    <span class="topic-badge">Topic 1</span>
+                </div>
+                <h2 class="home-card-title">Introduction to DHIS2</h2>
+                <p class="home-card-text">Know what DHIS2 is and how its parts fit together, before touching anything.</p>
+                <div class="home-card-meta">8 steps</div>
+                <span class="open-btn">Open topic 1</span>
+            </a>
+            <a class="home-card t2" href="topic2.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
+                    <span class="topic-badge">Topic 2</span>
+                </div>
+                <h2 class="home-card-title">Set up DHIS2 locally</h2>
+                <p class="home-card-text">Have your own DHIS2 to practise on, instead of learning on a live server.</p>
+                <div class="home-card-meta">14 steps</div>
+                <span class="open-btn">Open topic 2</span>
+            </a>
+            <a class="home-card t3" href="topic3.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4M12 11v4M6 21v-4M18 21v-4"/><rect x="9" y="3" width="6" height="4" rx="1"/><rect x="3" y="17" width="6" height="4" rx="1"/><rect x="15" y="17" width="6" height="4" rx="1"/><path d="M6 17v-3h12v3"/></svg></span>
+                    <span class="topic-badge">Topic 3</span>
+                </div>
+                <h2 class="home-card-title">Set up organisation units</h2>
+                <p class="home-card-text">Decide where data comes from, and build those places in the system.</p>
+                <div class="home-card-meta">14 steps</div>
+                <span class="open-btn">Open topic 3</span>
+            </a>
+            <a class="home-card t4" href="topic4.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="7" ry="2.5"/><path d="M5 5.5v6c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-6M5 11.5v6c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-6"/></svg></span>
+                    <span class="topic-badge">Topic 4</span>
+                </div>
+                <h2 class="home-card-title">Create data elements</h2>
+                <p class="home-card-text">Decide what gets counted every month, and in what unit.</p>
+                <div class="home-card-meta">4 steps</div>
+                <span class="open-btn">Open topic 4</span>
+            </a>
+            <a class="home-card t5" href="topic5.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v10M12 11H5v6M12 11h7v6"/></svg></span>
+                    <span class="topic-badge">Topic 5</span>
+                </div>
+                <h2 class="home-card-title">Build category combinations</h2>
+                <p class="home-card-text">Decide how each count is broken down, by sex, age or place.</p>
+                <div class="home-card-meta">2 steps</div>
+                <span class="open-btn">Open topic 5</span>
+            </a>
+            <a class="home-card t6" href="topic6.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg></span>
+                    <span class="topic-badge">Topic 6</span>
+                </div>
+                <h2 class="home-card-title">Create the data set</h2>
+                <p class="home-card-text">Decide what a facility reports, how often, and which facilities report it.</p>
+                <div class="home-card-meta">9 steps</div>
+                <span class="open-btn">Open topic 6</span>
+            </a>
+            <a class="home-card t7" href="topic7.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18"/></svg></span>
+                    <span class="topic-badge">Topic 7</span>
+                </div>
+                <h2 class="home-card-title">Design the form</h2>
+                <p class="home-card-text">Make the entry form quick to fill and hard to get wrong.</p>
+                <div class="home-card-meta">10 steps</div>
+                <span class="open-btn">Open topic 7</span>
+            </a>
+            <a class="home-card t8" href="topic8.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 3v6M16 3v6M8 13h5M8 17h8"/></svg></span>
+                    <span class="topic-badge">Topic 8</span>
+                </div>
+                <h2 class="home-card-title">Enter aggregate data</h2>
+                <p class="home-card-text">Get real monthly numbers into the system and be sure they are right.</p>
+                <div class="home-card-meta">9 steps</div>
+                <span class="open-btn">Open topic 8</span>
+            </a>
+            <a class="home-card t9" href="topic9.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg></span>
+                    <span class="topic-badge">Topic 9</span>
+                </div>
+                <h2 class="home-card-title">Enter case based data</h2>
+                <p class="home-card-text">Record one row per case, so you can ask who and how old, not only how many.</p>
+                <div class="home-card-meta">7 steps</div>
+                <span class="open-btn">Open topic 9</span>
+            </a>
+            <a class="home-card t10" href="topic10.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg></span>
+                    <span class="topic-badge">Topic 10</span>
+                </div>
+                <h2 class="home-card-title">Design custom forms</h2>
+                <p class="home-card-text">Build a form in HTML, CSS and JavaScript when the paper form must be matched exactly.</p>
+                <div class="home-card-meta">7 steps</div>
+                <span class="open-btn">Open topic 10</span>
+            </a>
+            <a class="home-card t11" href="topic11.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><circle cx="12" cy="6.5" r="1.6"/><circle cx="12" cy="17.5" r="1.6"/></svg></span>
+                    <span class="topic-badge">Topic 11</span>
+                </div>
+                <h2 class="home-card-title">Create indicators</h2>
+                <p class="home-card-text">Turn raw counts into rates that compare places fairly.</p>
+                <div class="home-card-meta">19 steps</div>
+                <span class="open-btn">Open topic 11</span>
+            </a>
+            <a class="home-card t12" href="topic12.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="M8 16v-5M12 16V8M16 16v-7"/></svg></span>
+                    <span class="topic-badge">Topic 12</span>
+                </div>
+                <h2 class="home-card-title">Build charts in Data Visualizer</h2>
+                <p class="home-card-text">Make the numbers readable, as tables and as charts.</p>
+                <div class="home-card-meta">13 steps</div>
+                <span class="open-btn">Open topic 12</span>
+            </a>
+            <a class="home-card t13" href="topic13.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg></span>
+                    <span class="topic-badge">Topic 13</span>
+                </div>
+                <h2 class="home-card-title">Build maps</h2>
+                <p class="home-card-text">Show where the problem is, not only how big it is.</p>
+                <div class="home-card-meta">8 steps</div>
+                <span class="open-btn">Open topic 13</span>
+            </a>
+            <a class="home-card t14" href="topic14.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg></span>
+                    <span class="topic-badge">Topic 14</span>
+                </div>
+                <h2 class="home-card-title">Design the dashboard</h2>
+                <p class="home-card-text">Put everything a programme needs to decide on one page.</p>
+                <div class="home-card-meta">14 steps</div>
+                <span class="open-btn">Open topic 14</span>
+            </a>
+            <a class="home-card t15" href="topic15.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M17 11h4M19 9v4"/></svg></span>
+                    <span class="topic-badge">Topic 15</span>
+                </div>
+                <h2 class="home-card-title">Create users</h2>
+                <p class="home-card-text">Decide who may enter data, who may read it, and where they may do either.</p>
+                <div class="home-card-meta">6 steps</div>
+                <span class="open-btn">Open topic 15</span>
+            </a>
+            <a class="home-card t16" href="topic16.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v10m0 0-4-4m4 4 4-4"/><path d="M4 18h16"/></svg></span>
+                    <span class="topic-badge">Topic 16</span>
+                </div>
+                <h2 class="home-card-title">Download data</h2>
+                <p class="home-card-text">Get the data out of DHIS2, for analysis, for reports and for sharing.</p>
+                <div class="home-card-meta">4 steps</div>
+                <span class="open-btn">Open topic 16</span>
+            </a>
+            <a class="home-card t17" href="topic17.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
+                    <span class="topic-badge">Topic 17</span>
+                </div>
+                <h2 class="home-card-title">Customise DHIS2</h2>
+                <p class="home-card-text">Make the system carry your programme name, logo and working defaults.</p>
+                <div class="home-card-meta">5 steps</div>
+                <span class="open-btn">Open topic 17</span>
+            </a>
+            <a class="home-card t18" href="topic18.html">
+                <div class="card-top">
+                    <span class="home-card-icon"><svg class="topic-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M17.5 14v7M14 17.5h7"/></svg></span>
+                    <span class="topic-badge">Topic 18</span>
+                </div>
+                <h2 class="home-card-title">Install more apps</h2>
+                <p class="home-card-text">Extend DHIS2 with ready made apps, without writing any code.</p>
+                <div class="home-card-meta">5 steps</div>
+                <span class="open-btn">Open topic 18</span>
+            </a>
+    </div>
+  </section>
+  <p class="footer">AMMnet DHIS2 Hackathon, facilitated by <strong>Mohamed Sillah Kanu</strong></p>
+</main>
+</body>
+</html>
